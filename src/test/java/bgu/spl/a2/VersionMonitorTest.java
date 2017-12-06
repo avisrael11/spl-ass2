@@ -16,15 +16,15 @@ public class VersionMonitorTest {
     }
 
     @Test
-    public void getVersion() throws Exception {
+    public void testGetVersion() throws Exception {
     }
 
     @Test
-    public void inc() throws Exception {
+    public void testInc() throws Exception {
     }
 
     @Test
-    public void await() throws Exception {
+    public void testAwait() throws Exception {
     }
 
 }
