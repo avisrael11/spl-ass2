@@ -17,7 +17,7 @@ public class PromiseTest {
     }
 
     @Test
-    public void get() throws Exception {
+    public void testGet() throws Exception {
     }
 
     @Test
