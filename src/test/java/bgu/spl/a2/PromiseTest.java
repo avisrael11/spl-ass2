@@ -21,7 +21,7 @@ public class PromiseTest {
     }
 
     @Test
-    public void isResolved() throws Exception {
+    public void testIsResolved() throws Exception {
     }
 
     @Test
