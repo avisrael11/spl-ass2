@@ -1,5 +1,7 @@
 package bgu.spl.a2;
 
+import java.util.Vector;
+
 /**
  * this class represents a deferred result i.e., an object that eventually will
  * be resolved to hold a result of some operation, the class allows for getting
@@ -16,6 +18,8 @@ package bgu.spl.a2;
  *            the result type, <boolean> resolved - initialized ;
  */
 public class Promise<T>{
+
+	private Vector<callback> callbackVector = new Vector<callback>();
 
 	/**
 	 *
@@ -56,9 +60,10 @@ public class Promise<T>{
 	 * @param value
 	 *            - the value to resolve this promise object with
 	 */
-	public void resolve(T value){
+	public void resolve(T value) throws IllegalStateException{
 		//TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
+		callbackVector.forEach();
 	}
 
 	/**
@@ -75,7 +80,11 @@ public class Promise<T>{
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(isResolved()){
+			callback.call();
+		}
+		else{
+			callbackVector.add(callback);
+		}
 	}
 }

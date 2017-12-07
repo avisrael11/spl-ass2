@@ -4,9 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
-//why don't add protected to function?
+
 
 public class VersionMonitorTest extends TestCase {
     private VersionMonitor vm;
@@ -51,7 +51,7 @@ public class VersionMonitorTest extends TestCase {
         try {
             t.join(1000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+
             Assert.fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
@@ -66,7 +66,7 @@ public class VersionMonitorTest extends TestCase {
         try {
             t.join(1000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+
             Assert.fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
@@ -82,7 +82,7 @@ public class VersionMonitorTest extends TestCase {
         try {
             t.join(1000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+
             Assert.fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
