@@ -1,15 +1,17 @@
 package bgu.spl.a2;
-//testtesttest
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 
-public class VersionMonitorTest extends TestCase {
+
+
+public class VersionMonitorTest  {
+
     private VersionMonitor vm;
+
 
     @Before
     public void setUp(){
@@ -52,7 +54,7 @@ public class VersionMonitorTest extends TestCase {
             t.join(1000);
         } catch (InterruptedException e) {
 
-            Assert.fail("unexpected interrupt");
+            fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
 
@@ -67,7 +69,7 @@ public class VersionMonitorTest extends TestCase {
             t.join(1000);
         } catch (InterruptedException e) {
 
-            Assert.fail("unexpected interrupt");
+            fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
 
@@ -83,7 +85,7 @@ public class VersionMonitorTest extends TestCase {
             t.join(1000);
         } catch (InterruptedException e) {
 
-            Assert.fail("unexpected interrupt");
+            fail("unexpected interrupt");
         }
         assertTrue(t.getState() != Thread.State.WAITING);
 

@@ -83,6 +83,7 @@ public class Promise<T>{
 	public void subscribe(callback callback) {
 		if(isResolved()){
 			callback.call();
+
 		}
 		else{
 			callbackVector.add(callback);

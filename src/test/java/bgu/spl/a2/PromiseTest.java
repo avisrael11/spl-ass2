@@ -11,11 +11,14 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 /*
 *
+*
  */
 public class PromiseTest {
 
 
     private Promise<Integer> p;
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -24,31 +27,26 @@ public class PromiseTest {
 
     @After
     public void tearDown() throws Exception {
+        p = null;
     }
 
-    /**
-     * ?????
-     * Test method for {@link spl.util.promise#get()}. Positive test.
-     */
+
     @Test
-    public void testGet() throws Exception {
+    public void testGet_resolved_getResult()  {
         Integer i1 = 1;
-        p.resolve(i1);
+
         try {
+            p.resolve(i1);
             assertEquals(i1, p.get());
         } catch (Exception e) {
             fail("Unexpected exception: " + e.getMessage());
         }
     }
 
-    /**
-     * ????
-     * Test method for {@link spl.util.Promise#get()}. Negative test - throw an
-     * exception.
-     */
+
     @Test public void testGet_unResolved_throwException() {
         try {
-            Promise.get();
+            p.get();
             fail("Exception expected!");
         } catch (IllegalStateException e) {
             assertTrue(true);
@@ -72,9 +70,8 @@ public class PromiseTest {
         try {
             p.resolve(in);
             assertEquals(true, p.isResolved());
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            Assert.fail();
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.getMessage());
         }
 
     }
@@ -85,7 +82,6 @@ public class PromiseTest {
 
 
         try{
-            //Promise<Integer> p = new Promise<Integer>();
             p.resolve (5);
             try {
                 p.resolve(6);
@@ -96,14 +92,16 @@ public class PromiseTest {
                 assertEquals(x, 5);
             }
             catch(Exception ex){
-                    Assert.fail();
+                fail("Unexpected exception: " + ex.getMessage());
 
                 }
         }
         catch(Exception ex){
-                Assert.fail();
+            fail("Unexpected exception: " + ex.getMessage());
         }
+
     }
+
 
     @Test
     public void testResolve_activateCallbacks(){
@@ -116,12 +114,50 @@ public class PromiseTest {
             assertTrue(ci.isCalled());
         }
         catch (Exception e){
-            fail();
+            fail("Unexpected exception: " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testResolve_activate3Callbacks(){
+        try{
+            callBackImp ci1 = new callBackImp();
+            callBackImp ci2 = new callBackImp();
+            callBackImp ci3 = new callBackImp();
+            p.subscribe(ci1);
+            p.subscribe(ci2);
+            p.subscribe(ci3);
+
+            assertFalse(ci1.isCalled());
+            assertFalse(ci2.isCalled());
+            assertFalse(ci3.isCalled());
+
+            p.resolve(6);
+
+            assertTrue(ci1.isCalled());
+            assertTrue(ci2.isCalled());
+            assertTrue(ci3.isCalled());
+        }
+        catch (Exception e){
+            fail("Unexpected exception: " + e.getMessage());
         }
     }
 
     @Test
-    public void subscribe() throws Exception {
+    public void testSubscribe_resolved_callBackCalled()  {
+        try{
+            p.resolve(6);
+
+            callBackImp ci = new callBackImp();
+            p.subscribe(ci);
+
+            assertTrue(ci.isCalled());
+
+        }
+        catch (Exception e){
+            fail("Unexpected exception: " + e.getMessage());
+        }
 
     }
 
