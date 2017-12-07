@@ -63,7 +63,8 @@ public class Promise<T>{
 	public void resolve(T value) throws IllegalStateException{
 		//TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
-		callbackVector.forEach();
+
+		//call all callbacks
 	}
 
 	/**

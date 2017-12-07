@@ -106,8 +106,36 @@ public class PromiseTest {
     }
 
     @Test
+    public void testResolve_activateCallbacks(){
+        try{
+            callBackImp ci = new callBackImp();
+            p.subscribe(ci);
+
+            assertFalse(ci.isCalled());
+            p.resolve(6);
+            assertTrue(ci.isCalled());
+        }
+        catch (Exception e){
+            fail();
+        }
+    }
+
+    @Test
     public void subscribe() throws Exception {
 
     }
 
+
+    public class callBackImp implements callback{
+
+        private boolean called = false;
+        public void call() {
+            called = true;
+        }
+
+        public boolean isCalled(){
+            return called;
+        }
+
+    }
 }
