@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,6 +20,12 @@ public abstract class Action<R> {
     String name;
 
     Promise<R> promise;
+
+    protected ActorThreadPool actorThreadPool;
+    protected String Id;
+    protected PrivateState privateState;
+
+    private boolean started = false;
 
 	/**
      * start handling the action - note that this method is protected, a thread
@@ -40,6 +47,16 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+       if(!started) {
+           Id               = actorId;
+           actorThreadPool  = pool;
+           privateState     = actorState;
+           started          = true;
+
+           start();
+       }
+
+
    }
     
     
@@ -54,15 +71,21 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-        AtomicInteger promisesResolved = new AtomicInteger(actions.size());
+        CountDownLatch promisesResolved = new CountDownLatch(actions.size());
 
         for(Action action : actions){
             promisesResolved.incrementAndGet();
             action.getResult().subscribe( ()->{
-                if(promisesResolved.decrementAndGet() == 0){
-                    callback.call();
-                }
+                promisesResolved.countDown();
+
             });
+            try {
+                promisesResolved.await();
+            }
+            catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
         }
    
     }
