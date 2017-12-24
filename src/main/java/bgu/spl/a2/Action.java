@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -14,6 +15,10 @@ import java.util.Collection;
  * @param <R> the action result type
  */
 public abstract class Action<R> {
+
+    String name;
+
+    Promise<R> promise;
 
 	/**
      * start handling the action - note that this method is protected, a thread
@@ -34,7 +39,7 @@ public abstract class Action<R> {
     * public/private/protected
     *
     */
-   /*package*/ final void handle() {
+   /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
    }
     
     
@@ -49,8 +54,16 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        AtomicInteger promisesResolved = new AtomicInteger(actions.size());
+
+        for(Action action : actions){
+            promisesResolved.incrementAndGet();
+            action.getResult().subscribe( ()->{
+                if(promisesResolved.decrementAndGet() == 0){
+                    callback.call();
+                }
+            });
+        }
    
     }
 
@@ -61,8 +74,7 @@ public abstract class Action<R> {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+       promise.resolve(result);
    
     }
     
@@ -70,12 +82,11 @@ public abstract class Action<R> {
      * @return action's promise (result)
      */
     public final Promise<R> getResult() {
-    	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    	return promise;
     }
     
     /**
-     * send an action to an other actor
+     * send an action to another actor
      * 
      * @param action
      * 				the action
@@ -91,4 +102,19 @@ public abstract class Action<R> {
         throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
+
+    /**
+     * set action's name
+     * @param actionName
+     */
+    public void setActionName(String actionName){
+        name = actionName;
+    }
+
+    /**
+     * @return action's name
+     */
+    public String getActionName(){
+        return name;
+    }
 }

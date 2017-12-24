@@ -110,7 +110,6 @@ public class VersionMonitorTest  {
             try {
                 vm.await(version);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 isInterrupt = true;
             }
         }

@@ -25,9 +25,11 @@ public class ActorThreadPool {
 	/*queues is a map of all the actors queues, *actorId* is the key. each queue is of type @{@link ActionQueue} and contains @{@link Action}
 	 to be executed by the threads*/
 	ConcurrentHashMap<String,ActionQueue> queues;
+
 	/*threads is a list of all threads in the pool, the threads are defined by {@link #initializeThreads(int)} method
 	 */
 	protected List<Thread> threads;
+
 	/* - ShutDownLatch a {@link CountDownLatch} that is initialized with @nthreads and use @countDown every time a thread from the pool has terminated.
 	 * ShutDownLatch is used in {@link #shutdown()} to make sure all threads are terminated before the method returns.
 	 *
@@ -51,12 +53,12 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		privateStates = new ConcurrentHashMap<String,PrivateState>();
-		queues = new ConcurrentHashMap<String,ActionQueue>();
-		monitor = new VersionMonitor();
-		startLatch = new CountDownLatch(nthreads);
-		ShutDownLatch = new CountDownLatch(nthreads);
-		threads = new LinkedList<Thread>();
+		privateStates 	= new ConcurrentHashMap<String,PrivateState>();
+		queues 			= new ConcurrentHashMap<String,ActionQueue>();
+		monitor 		= new VersionMonitor();
+		startLatch 		= new CountDownLatch(nthreads);
+		ShutDownLatch 	= new CountDownLatch(nthreads);
+		threads 		= new LinkedList<Thread>();
 		initializeThreads(nthreads);
 	}
 
@@ -79,7 +81,7 @@ public class ActorThreadPool {
 				queues.get(actorId).add(action);
 
 			} else {
-				privateStates.putIfAbsent(actorId, actorState);
+				privateStates.putIfAbsent(actorId, actorState); //should be add, not put if absent?
 				queues.get(actorId).add(action);
 			}
 		}

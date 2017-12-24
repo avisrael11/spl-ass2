@@ -21,6 +21,9 @@ public class Promise<T>{
 
 	private Vector<callback> callbackVector = new Vector<callback>();
 
+	private boolean resolved = false;
+	private T result;
+
 	/**
 	 *
 	 * @return the resolved value if such exists (i.e., if this object has been
@@ -29,28 +32,30 @@ public class Promise<T>{
 	 *             in the case where this method is called and this object is
 	 *             not yet resolved
 	 */
-	public T get() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+	public T get() throws IllegalStateException{
+		synchronized (this){
+		    if (resolved){
+		        return result;
+            }
+        }
+		throw new IllegalStateException("promise not resolved yet");
 	}
 
 	/**
 	 *
 	 * @return true if this object has been resolved - i.e., if the method
 	 *         {@link #resolve(java.lang.Object)} has been called on this object
-	 *         before.
-	 */
-	public boolean isResolved() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
-
-	}
-
-
-	/**
-	 * resolve this promise object - from now on, any call to the method
-	 * {@link #get()} should return the given value
 	 *
+     *         before.
+     */
+    public boolean isResolved() {
+        return resolved;
+    }
+
+
+    /**
+     * resolve this promise object - from now on, any call to the method
+     * {@link #get()} should return the given value
 	 * Any callbacks that were registered to be notified when this object is
 	 * resolved via the {@link #subscribe(callback)} method should
 	 * be executed before this method returns
@@ -60,33 +65,40 @@ public class Promise<T>{
 	 * @param value
 	 *            - the value to resolve this promise object with
 	 */
-	public void resolve(T value) throws IllegalStateException{
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+	public void resolve(T value) throws IllegalStateException {
+        synchronized (this) {
+            if (resolved) {
+                throw new IllegalStateException("promise already resolved");
+            }
 
-		//call all callbacks
-	}
+            result = value;
+            resolved = true;
+        }
+        for(callback call: callbackVector){
+            call.call();
+        }
+    }
 
-	/**
-	 * add a callback to be called when this object is resolved. If while
-	 * calling this method the object is already resolved - the callback should
-	 * be called immediately
-	 *
-	 * Note that in any case, the given callback should never get called more
-	 * than once, in addition, in order to avoid memory leaks - once the
-	 * callback got called, this object should not hold its reference any
-	 * longer.
-	 *
-	 * @param callback
-	 *            the callback to be called when the promise object is resolved
-	 */
+        /**
+         * add a callback to be called when this object is resolved. If while
+         * calling this method the object is already resolved - the callback should
+         * be called immediately
+         *
+         * Note that in any case, the given callback should never get called more
+         * than once, in addition, in order to avoid memory leaks - once the
+         * callback got called, this object should not hold its reference any
+         * longer.
+         *
+         * @param callback
+         *            the callback to be called when the promise object is resolved
+         */
 	public void subscribe(callback callback) {
-		if(isResolved()){
-			callback.call();
-
-		}
-		else{
-			callbackVector.add(callback);
-		}
+		synchronized (this) {
+            if (isResolved()) {
+                callback.call();
+            } else {
+                callbackVector.add(callback);
+            }
+        }
 	}
 }
