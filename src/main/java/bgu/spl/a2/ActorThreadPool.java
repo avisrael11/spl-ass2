@@ -1,5 +1,10 @@
 package bgu.spl.a2;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 /**
  * represents an actor thread pool - to understand what this class does please
  * refer to your assignment.
@@ -11,6 +16,27 @@ package bgu.spl.a2;
  * methods
  */
 public class ActorThreadPool {
+
+
+
+	//Private & Protected
+	private ConcurrentHashMap<String,PrivateState> privateStates;
+
+	/*queues is a map of all the actors queues, *actorId* is the key. each queue is of type @{@link ActionQueue} and contains @{@link Action}
+	 to be executed by the threads*/
+	ConcurrentHashMap<String,ActionQueue> queues;
+	/*threads is a list of all threads in the pool, the threads are defined by {@link #initializeThreads(int)} method
+	 */
+	protected List<Thread> threads;
+	/* - ShutDownLatch a {@link CountDownLatch} that is initialized with @nthreads and use @countDown every time a thread from the pool has terminated.
+	 * ShutDownLatch is used in {@link #shutdown()} to make sure all threads are terminated before the method returns.
+	 *
+	 * - StartLatch is a {@link CountDownLatch} that is initialized with @nthreads and use @countDown every time a thread from the pool has started.
+	 * startLatch is used in {@link #start()} to make sure all threads have started before the method returns.
+	 */
+	private CountDownLatch startLatch, ShutDownLatch;
+	private VersionMonitor monitor;
+
 
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
@@ -25,8 +51,13 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	public ActorThreadPool(int nthreads) {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		privateStates = new ConcurrentHashMap<String,PrivateState>();
+		queues = new ConcurrentHashMap<String,ActionQueue>();
+		monitor = new VersionMonitor();
+		startLatch = new CountDownLatch(nthreads);
+		ShutDownLatch = new CountDownLatch(nthreads);
+		threads = new LinkedList<Thread>();
+		initializeThreads(nthreads);
 	}
 
 	/**
@@ -41,8 +72,18 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		synchronized ( this ) {
+			if (!queues.containsKey(actorId)) {
+				privateStates.putIfAbsent(actorId, actorState);
+				queues.putIfAbsent(actorId, new ActionQueue(actorId));
+				queues.get(actorId).add(action);
+
+			} else {
+				privateStates.putIfAbsent(actorId, actorState);
+				queues.get(actorId).add(action);
+			}
+		}
+		monitor.inc();
 	}
 
 	/**
@@ -56,16 +97,100 @@ public class ActorThreadPool {
 	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() throws InterruptedException {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(Thread.currentThread().isInterrupted())
+			throw new InterruptedException("current thread is interrupted, shutdown failed");
+
+		System.out.println("Shutting down pool");
+
+		for(Thread thread: this.threads) {
+			thread.interrupt();
+		}
+		System.out.println("Waiting for all threads to terminate");
+		ShutDownLatch.await();
+		System.out.println("Shutdown complete");
 	}
+
 
 	/**
 	 * start the threads belongs to this thread pool
 	 */
 	public void start() {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		for(Thread thread: this.threads)
+			thread.start();
+		try {
+			startLatch.await();
+			System.out.println("All Threads have started");
+		} catch (InterruptedException e) {
+			System.out.println("Error while starting threads, start failed");
+		}
+	}
+
+
+	/**
+	 * A getter method for actors
+	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
+	 *
+	 * @return actors
+	 */
+	public Map<String, PrivateState> getActors(){
+		return privateStates;
+	}
+
+	/**
+	 * getter for actor's private state
+	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
+	 *
+	 * @param actorId
+	 * 		The Actor's id
+	 * @return actor's private state
+	 */
+	public PrivateState getPrivateState(String actorId){
+		return privateStates.get(actorId);
+	}
+
+	/**
+	 * getter for actor's private state
+	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
+	 *
+	 * @param nthreads
+	 * 		the number of threads that should be started by this thread pool
+	 *
+	 */
+	private void initializeThreads(int nthreads){
+		for(int i=0;i<nthreads;i++){
+			threads.add(new Thread(() -> {
+				startLatch.countDown();
+				while (!Thread.currentThread().isInterrupted()){
+					int version = monitor.getVersion();
+					for(ActionQueue currQueue : queues.values()){
+						if(Thread.currentThread().isInterrupted())
+							break;
+						if (!currQueue.isEmpty() && currQueue.getLock().tryLock()) {
+							try {
+								if (!currQueue.isEmpty()) { // get an Action from @currQueue if not empty
+									currQueue.remove().handle(this, currQueue.getActorId(), privateStates.get(currQueue.getActorId()));
+									if(!currQueue.isEmpty())
+										monitor.inc();
+								}//if
+							}//try
+							catch (Exception e) {
+								e.printStackTrace();
+							}
+							finally{
+								currQueue.getLock().unlock();
+							}
+						}//if
+					}//for
+					try {
+						if (monitor.getVersion()==version)
+							monitor.await(version);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt(); // if thread is blocked
+					}
+				}//while
+				ShutDownLatch.countDown();
+			}));
+		}
 	}
 
 }
