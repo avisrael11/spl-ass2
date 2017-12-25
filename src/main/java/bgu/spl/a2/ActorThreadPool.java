@@ -37,7 +37,7 @@ public class ActorThreadPool {
 	 * startLatch is used in {@link #start()} to make sure all threads have started before the method returns.
 	 */
 	private CountDownLatch startLatch, ShutDownLatch;
-	private VersionMonitor monitor;
+	private VersionMonitor versionMonitor;
 
 
 	/**
@@ -55,7 +55,7 @@ public class ActorThreadPool {
 	public ActorThreadPool(int nthreads) {
 		privateStates 	= new ConcurrentHashMap<String,PrivateState>();
 		queues 			= new ConcurrentHashMap<String,ActionQueue>();
-		monitor 		= new VersionMonitor();
+		versionMonitor 		= new VersionMonitor();
 		startLatch 		= new CountDownLatch(nthreads);
 		ShutDownLatch 	= new CountDownLatch(nthreads);
 		threads 		= new LinkedList<Thread>();
@@ -85,7 +85,7 @@ public class ActorThreadPool {
 				queues.get(actorId).add(action);
 			}
 		}
-		monitor.inc();
+		versionMonitor.inc();
 	}
 
 	/**
@@ -154,11 +154,7 @@ public class ActorThreadPool {
 	}
 
 	/**
-	 * getter for actor's private state
-	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
-	 *
-	 * @param nthreads
-	 * 		the number of threads that should be started by this thread pool
+	 * initialize the threads
 	 *
 	 */
 	private void initializeThreads(int nthreads){
@@ -166,7 +162,7 @@ public class ActorThreadPool {
 			threads.add(new Thread(() -> {
 				startLatch.countDown();
 				while (!Thread.currentThread().isInterrupted()){
-					int version = monitor.getVersion();
+					int version = versionMonitor.getVersion();
 					for(ActionQueue currQueue : queues.values()){
 						if(Thread.currentThread().isInterrupted()){
 							ShutDownLatch.countDown();
@@ -178,7 +174,7 @@ public class ActorThreadPool {
 								if (!currQueue.isEmpty()) { // get an Action from @currQueue if not empty
 									currQueue.remove().handle(this, currQueue.getActorId(), privateStates.get(currQueue.getActorId()));
 									if(!currQueue.isEmpty())
-										monitor.inc();
+										versionMonitor.inc();
 								}//if
 							}//try
 							catch (Exception e) {
@@ -190,8 +186,8 @@ public class ActorThreadPool {
 						}//if
 					}//for
 					try {
-						if (monitor.getVersion()==version)
-							monitor.await(version);
+						if (versionMonitor.getVersion()==version) //deadlock - need check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+							versionMonitor.await(version);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt(); // if thread is blocked
 					}
