@@ -107,8 +107,8 @@ public class ActorThreadPool {
 		for(Thread thread: this.threads) {
 			thread.interrupt();
 		}
-		monitor.setShutDown(true);
-		monitor.inc();
+		versionMonitor.setShutDown(true);
+		versionMonitor.inc();
 
 		System.out.println("Waiting for all threads to terminate");
 		ShutDownLatch.await();

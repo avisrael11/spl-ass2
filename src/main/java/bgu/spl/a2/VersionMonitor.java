@@ -42,7 +42,7 @@ public class VersionMonitor {
     public void inc() {
         synchronized (lock){
             ver.incrementAndGet();
-            notifyAll();
+            lock.notifyAll();
         }
     }
 
@@ -56,7 +56,7 @@ public class VersionMonitor {
     public void await(int version) throws InterruptedException {
         synchronized (lock) {
             while(!shutDown && ver.get() == version){
-                this.wait();
+                lock.wait();
             }
         }
 

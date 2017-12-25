@@ -41,7 +41,13 @@ public class VersionMonitorTest  {
     public void testAwait_CurrentVersion_ThreadStatusIsWait(){
         Thread t = new awaitThread();
         t.start();
-        assertEquals(t.getState(), Thread.State.WAITING);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals( Thread.State.WAITING, t.getState());
         t.interrupt();
     }
 
@@ -96,8 +102,21 @@ public class VersionMonitorTest  {
     public void testAwait_CurrentVersion_Interrupting_ThreadInterrupted(){
         Thread t = new awaitThread();
         t.start();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         assertEquals(t.getState(), Thread.State.WAITING);
         t.interrupt();
+
+        try {
+            t.join(1000);
+        } catch (InterruptedException e) {
+
+            fail("unexpected interrupt");
+        }
         assertTrue(((awaitThread) t).isInterrupt);
     }
 
