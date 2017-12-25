@@ -46,7 +46,7 @@ public abstract class Action<R> {
     * public/private/protected
     *
     */
-   /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+   /*package*/final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
        if(!started) {
            Id               = actorId;
            actorThreadPool  = pool;

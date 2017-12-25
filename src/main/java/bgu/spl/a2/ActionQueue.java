@@ -19,6 +19,8 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
     public Lock getLock(){
         return this.lock;
     }
-    public String getActorId(){ return this.actorId; }
+    public String getActorId(){
+        return this.actorId;
+    }
 
 }
