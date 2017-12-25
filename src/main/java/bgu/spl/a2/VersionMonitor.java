@@ -1,5 +1,9 @@
 package bgu.spl.a2;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
  * simple, the monitor has a version number which you can receive via the method
@@ -18,20 +22,43 @@ package bgu.spl.a2;
  */
 public class VersionMonitor {
 
-    private Integer ver = 0;
+    private AtomicInteger ver   = new AtomicInteger();
+    private Object lock         = new Object();
+    private boolean shutDown    = false;
 
     public int getVersion() {
-       synchronized (ver){
-           return ver;
-       }
+        return ver.get();
     }
 
+    public void setShutDown(boolean val){
+        shutDown = val;
+    }
+
+    /**
+     * increnent version by one
+     *
+     * synchronization is to make sure that all the waiting threads are notified (no context switch between the while and wait)
+     */
     public void inc() {
-       synchronized (ver){
-           ++ver;
-       }
+        synchronized (lock){
+            ver.incrementAndGet();
+            notifyAll();
+        }
     }
 
+    /**
+     * wait until versionMonitor's version is different than
+     * @param version
+     *
+     * @throws InterruptedException
+     * synchronization is to make sure that all the waiting threads are notified (no context switch between the while and wait)
+     */
     public void await(int version) throws InterruptedException {
+        synchronized (lock) {
+            while(!shutDown && ver.get() == version){
+                this.wait();
+            }
+        }
+
     }
 }
