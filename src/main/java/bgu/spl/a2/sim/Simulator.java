@@ -5,6 +5,7 @@
  */
 package bgu.spl.a2.sim;
 import java.util.List;
+import java.lang.System;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import bgu.spl.a2.ActorThreadPool;
@@ -15,7 +16,7 @@ import bgu.spl.a2.PrivateState;
  */
 public class Simulator {
 
-	
+	private static String path;
 	public static ActorThreadPool actorThreadPool;
 	
 	/**
@@ -47,7 +48,9 @@ public class Simulator {
 	
 	
 	public static int main(String [] args){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		path= args[0];
+		System.out.println(path);
+		return 0;
+
 	}
 }
