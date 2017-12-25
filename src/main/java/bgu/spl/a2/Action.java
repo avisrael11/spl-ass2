@@ -32,7 +32,10 @@ public abstract class Action<R> {
      * cannot call it directly.
      */
     protected abstract void start();
-    
+
+    protected void continueAction(){
+        start();
+    }
 
     /**
     *
@@ -55,8 +58,9 @@ public abstract class Action<R> {
 
            start();
        }
-
-
+       else{
+           continueAction();
+       }
    }
     
     
@@ -73,20 +77,21 @@ public abstract class Action<R> {
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
         CountDownLatch promisesResolved = new CountDownLatch(actions.size());
 
-        for(Action action : actions){
-            promisesResolved.incrementAndGet();
-            action.getResult().subscribe( ()->{
+        for(Action action : actions) {
+
+            action.getResult().subscribe(() -> {
                 promisesResolved.countDown();
 
             });
-            try {
-                promisesResolved.await();
-            }
-            catch (InterruptedException e){
-                e.printStackTrace();
-            }
-
         }
+        try {
+            promisesResolved.await();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        callback.call();
    
     }
 
@@ -121,8 +126,8 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        actorThreadPool.submit(action, actorId, actorState);
+        return action.getResult();
 	}
 
 
