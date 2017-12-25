@@ -10,15 +10,40 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
     private Lock lock;
     private String actorId;
 
+
+    /**
+     * to do - add doc
+     *
+     *
+     * @param actorId
+     *            ***
+     */
     public ActionQueue(String actorId) {
         super();
         this.lock = new ReentrantLock();
         this.actorId=actorId;
     }
 
+
+    /**
+     * to do - add doc
+     *
+     *
+     *
+     *            ***
+     */
     public Lock getLock(){
         return this.lock;
     }
+
+
+    /**
+     * to do - add doc
+     *
+     *
+     *
+     *            ***
+     */
     public String getActorId(){
         return this.actorId;
     }

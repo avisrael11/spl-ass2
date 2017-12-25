@@ -180,7 +180,7 @@ public class ActorThreadPool {
 						}//if
 					}//for
 					try {
-						if (versionMonitor.getVersion()==version)
+						if (versionMonitor.getVersion()==version) //deadlock - need check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 							versionMonitor.await(version);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt(); // if thread is blocked
