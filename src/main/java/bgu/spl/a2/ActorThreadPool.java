@@ -81,7 +81,7 @@ public class ActorThreadPool {
 				queues.get(actorId).add(action);
 
 			} else {
-				privateStates.putIfAbsent(actorId, actorState); //should be add, not put if absent?
+				privateStates.putIfAbsent(actorId, actorState);
 				queues.get(actorId).add(action);
 			}
 		}
@@ -107,6 +107,8 @@ public class ActorThreadPool {
 		for(Thread thread: this.threads) {
 			thread.interrupt();
 		}
+		monitor.inc();
+
 		System.out.println("Waiting for all threads to terminate");
 		ShutDownLatch.await();
 		System.out.println("Shutdown complete");
@@ -161,8 +163,11 @@ public class ActorThreadPool {
 				while (!Thread.currentThread().isInterrupted()){
 					int version = versionMonitor.getVersion();
 					for(ActionQueue currQueue : queues.values()){
-						if(Thread.currentThread().isInterrupted())
-							break;
+						if(Thread.currentThread().isInterrupted()){
+							ShutDownLatch.countDown();
+							return;
+						}
+
 						if (!currQueue.isEmpty() && currQueue.getLock().tryLock()) {
 							try {
 								if (!currQueue.isEmpty()) { // get an Action from @currQueue if not empty
