@@ -2,7 +2,6 @@ package bgu.spl.a2;
 
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -19,11 +18,12 @@ public abstract class Action<R> {
 
     String name;
 
-    Promise<R> promise;
+    protected Promise<R> promise;
 
     protected ActorThreadPool actorThreadPool;
     protected String Id;
     protected PrivateState privateState;
+    private callback continuationCallBack;
 
     private boolean started = false;
 
@@ -32,10 +32,6 @@ public abstract class Action<R> {
      * cannot call it directly.
      */
     protected abstract void start();
-
-    protected void continueAction(){
-        start();
-    }
 
     /**
     *
@@ -58,8 +54,8 @@ public abstract class Action<R> {
 
            start();
        }
-       else{
-           continueAction();
+       else if(continuationCallBack != null){
+           continuationCallBack.call();
        }
    }
     
@@ -75,6 +71,7 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
+        continuationCallBack = callback;
         CountDownLatch promisesResolved = new CountDownLatch(actions.size());
 
         for(Action action : actions) {
@@ -91,8 +88,7 @@ public abstract class Action<R> {
             e.printStackTrace();
         }
 
-        callback.call();
-   
+        sendMessage(this, Id, privateState);
     }
 
     /**
@@ -103,7 +99,6 @@ public abstract class Action<R> {
      */
     protected final void complete(R result) {
        promise.resolve(result);
-   
     }
     
     /**

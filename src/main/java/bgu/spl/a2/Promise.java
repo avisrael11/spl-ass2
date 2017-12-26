@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class Promise<T>{
 
-	private Vector<callback> callbackVector = new Vector<callback>();
+	private Vector<callback> callbackVector = new Vector<>();
 
 	private boolean resolved = false;
 	private T result;
