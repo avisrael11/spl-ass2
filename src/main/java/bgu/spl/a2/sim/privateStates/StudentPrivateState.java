@@ -9,7 +9,7 @@ import bgu.spl.a2.PrivateState;
  */
 public class StudentPrivateState extends PrivateState{
 
-	private HashMap<String, Integer> grades;
+	private HashMap<String, Integer> grades = new HashMap<>();
 	private long signature;
 	
 	/**
@@ -18,8 +18,6 @@ public class StudentPrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public StudentPrivateState() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
 	public HashMap<String, Integer> getGrades() {
@@ -36,5 +34,13 @@ public class StudentPrivateState extends PrivateState{
 			return true;
 		}
 		return false;
+	}
+
+	public boolean addCourse(String course, int grade ){
+		if (grades.containsKey(course)) {
+			return false;
+		}
+		grades.put(course, grade);
+		return true;
 	}
 }
