@@ -6,21 +6,25 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 public class AddSpacesAction extends Action {
 
     private int spaces;
-    private String courseName;
+    private String Id;
 
     private final String actionName = "Add Spaces";
 
     public AddSpacesAction(String courseName, int spaces){
 
         this.spaces = spaces;
-        this.courseName = courseName;
+        this.Id = courseName;
         this.setActionName(actionName);
     }
 
-    public void start(){
+    protected void start(){
         privateState.addRecord(getActionName());
 
         boolean succeeded = ((CoursePrivateState)privateState).addSpaces(spaces);
-        promise.resolve(succeeded);
+        complete(succeeded);
+    }
+
+    public String getId() {
+        return Id;
     }
 }
