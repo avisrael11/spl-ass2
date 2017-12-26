@@ -5,7 +5,7 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 import java.util.List;
 
-public class VerifyOpenCourse extends Action {
+public class VerifyOpenCourse extends Action<Boolean> {
 
     private String       courseName;
     private String       departmentName;
@@ -21,7 +21,7 @@ public class VerifyOpenCourse extends Action {
 
     protected void start(){
         ((CoursePrivateState)this.privateState).setPrequisites(this.preRequisites);
-        ((CoursePrivateState)this.privateState).addSpaces(this.maxStudents);
+        ((CoursePrivateState)this.privateState).setAvailableSpots(this.maxStudents);
         complete(true);
     }
 }

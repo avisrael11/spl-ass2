@@ -29,4 +29,12 @@ public class StudentPrivateState extends PrivateState{
 	public long getSignature() {
 		return signature;
 	}
+
+	public boolean removeCourse(String course){
+		if (grades.containsKey(course)) {
+			grades.remove(course);
+			return true;
+		}
+		return false;
+	}
 }

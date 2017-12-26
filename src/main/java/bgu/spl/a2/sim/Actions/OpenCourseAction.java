@@ -7,19 +7,19 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenCourseAction extends Action {
+public class OpenCourseAction extends Action<Boolean> {
 
-    private String  courseName;
-    private int     maxStudents;
-    List            preRequisites;
+    private String          courseName;
+    private int             maxStudents;
+    private List<String>    preRequisites;
 
     private final String actionName = "Open Course";
 
-    public OpenCourseAction(String courseName, String departmentName, int maxStudents, List preRequisits){
+    public OpenCourseAction(String courseName, String departmentName, int maxStudents, List<String> preRequisites){
         this.courseName     = courseName;
         this.Id             = departmentName;
         this.maxStudents    = maxStudents;
-        this.preRequisites  = preRequisits;
+        this.preRequisites  = preRequisites;
 
         setActionName(actionName);
     }
