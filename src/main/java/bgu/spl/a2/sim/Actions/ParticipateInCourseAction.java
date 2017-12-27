@@ -33,6 +33,8 @@ public class ParticipateInCourseAction extends Action<Boolean> {
             complete(false);
         }
         else{
+            ((CoursePrivateState)privateState).registerStudent(studentId);
+
             List<Action<Boolean>> actions = new ArrayList<>();
             Action<Boolean> verifyParticipateInCourse = new VerifyParticipateInCourse(studentId, courseName, grade);
             actions.add(verifyParticipateInCourse);
