@@ -68,4 +68,10 @@ public class CoursePrivateState extends PrivateState{
 			}
 		return false;
 	}
+
+	public void unRegisterStudent(String student){
+		if(regStudents.remove(student) && registered > 0){
+			--registered;
+		}
+	}
 }

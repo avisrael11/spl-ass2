@@ -39,7 +39,7 @@ public class ParticipateInCourseAction extends Action<Boolean> {
             Action<Boolean> verifyParticipateInCourse = new VerifyParticipateInCourse(studentId, courseName, grade);
             actions.add(verifyParticipateInCourse);
 
-            sendMessage(verifyParticipateInCourse, courseName, actorThreadPool.getPrivateState(studentId));
+            sendMessage(verifyParticipateInCourse, courseName, new StudentPrivateState());
 
             then(actions, ()->{
                 complete(actions.get(0).getResult().get());
@@ -53,7 +53,7 @@ public class ParticipateInCourseAction extends Action<Boolean> {
 
     private boolean preRequisitesMet(){
         List<String> preRequisites = ((CoursePrivateState)actorThreadPool.getPrivateState(courseName)).getPrequisites();
-        HashMap<String, Integer> studentGrades = (((StudentPrivateState)actorThreadPool.getPrivateState(courseName)).getGrades();
+        HashMap<String, Integer> studentGrades = (((StudentPrivateState)actorThreadPool.getPrivateState(courseName)).getGrades());
         for(String course : preRequisites){
             if ( !studentGrades.containsKey(course) || !(studentGrades.get(course) >= passGrade) ){
                 return false;
@@ -63,6 +63,6 @@ public class ParticipateInCourseAction extends Action<Boolean> {
     }
 
     private boolean isSpace(){
-        return ((CoursePrivateState)privateState).getAvailableSpots() > ((CoursePrivateState)privateState).getRegistered();
+        return ((CoursePrivateState)privateState).getAvailableSpots() > ((CoursePrivateState)privateState).getRegistered() ;
     }
 }
