@@ -189,7 +189,7 @@ private String student;
 private String course;
 @SerializedName("Grade")
 @Expose
-private List<String> grade = null;
+private List<String> grade = nuddll;
 @SerializedName("Number")
 @Expose
 private String number;

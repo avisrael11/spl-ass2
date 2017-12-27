@@ -1,6 +1,9 @@
 package bgu.spl.a2.sim;
 import bgu.spl.a2.Promise;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * 
  * this class is related to {@link Computer}
@@ -11,7 +14,8 @@ import bgu.spl.a2.Promise;
  *
  */
 public class SuspendingMutex {
-	
+
+	private Lock lock = new ReentrantLock();
 	
 	/**
 	 * Computer acquisition procedure
@@ -23,17 +27,19 @@ public class SuspendingMutex {
 	 * @return a promise for the requested computer
 	 */
 	public Promise<Computer> down(String computerType){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (lock.tryLock()){
 	}
 	/**
 	 * Computer return procedure
 	 * releases a computer which becomes available in the warehouse upon completion
-	 * 
+	 *
 	 * @param computer
 	 */
 	public void up(Computer computer){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if( lock.isHeldByCurrentThread()){
+
+		}
+
+
 	}
 }

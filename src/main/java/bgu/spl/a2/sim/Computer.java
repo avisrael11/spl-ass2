@@ -8,11 +8,24 @@ public class Computer {
 	String computerType;
 	long failSig;
 	long successSig;
+	SuspendingMutex mutex;
 	
 	public Computer(String computerType) {
 		this.computerType = computerType;
+		mutex.up(computerType);
 	}
-	
+
+
+	public void setFailSig (long fSig){
+		this.failSig = fSig;
+	}
+
+	public void setSuccessSig (long sSig){
+		this.successSig = sSig;
+
+	}
+
+
 	/**
 	 * this method checks if the courses' grades fulfill the conditions
 	 * @param courses
@@ -25,4 +38,6 @@ public class Computer {
 		//TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
+
+
 }

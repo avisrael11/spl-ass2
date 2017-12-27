@@ -4,9 +4,19 @@
  * and open the template in the editor.
  */
 package bgu.spl.a2.sim;
+import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.lang.System;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+
+import bgu.spl.a2.Action;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
@@ -16,25 +26,61 @@ import bgu.spl.a2.PrivateState;
  */
 public class Simulator {
 
-	private static String path;
-	public static ActorThreadPool actorThreadPool;
-	
+
+	public 	static ActorThreadPool atp;
+	private static JsonObject jsonObj;
+	private static Warehouse wh;
+	private static CountDownLatch ActionPending;
+
+	public Simulator() {
+	}
+
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
     public static void start(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+
+		// Phase - build computer
+		JsonArray computersArray = jsonObj.get("Computers").getAsJsonArray();
+		HashMap<String, Computer> ComputersCollection = ActionFactory.ComputerBuilder(computersArray);
+		wh = new Warehouse(ComputersCollection);
+		atp.start();
+
+		//////////////////////////
+		// Phase 1
+		runPhase("Phase 1");
+
+
+		// Phase 2
+		runPhase("Phase 2");
+
+		// Phase 3
+		runPhase("Phase 3");
+
+		///////////////////////////
+
+		HashMap<String, PrivateState> SimulationResult = end();
+		Set<String> keySet = SimulationResult.keySet();
+
+		try {
+			FileOutputStream fResult = new FileOutputStream("result.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fResult);
+			oos.writeObject(SimulationResult);
+		} catch (FileNotFoundException e) {
+			System.out.println("The file is not found");
+		} catch (IOException e) {
+			e.toString();
+		}
     }
-	
+
+
 	/**
 	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
 	* 
 	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
 	*/
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		atp = myActorThreadPool;
 	}
 	
 	/**
@@ -44,13 +90,49 @@ public class Simulator {
 	public static ConcurrentLinkedQueue<PrivateState> end(){
 		//TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
+		/*
+		try {
+			atp.shutdown();
+		}catch(InterruptedException ignored){}
+		HashMap<String,PrivateState> SimulationResult = ((HashMap<String,PrivateState>)atp.getActors());
+		return SimulationResult;*/
 	}
-	
-	
+
+	/**
+	 * parse the jsonfile and create mutch threads
+	 * returns list of private states
+	 */
 	public static int main(String [] args){
-		path= args[0];
-		System.out.println(path);
+		String path 		= args[0];
+		JsonParser jsonParse 	= new JsonParser();
+		int numThread; // Number of thread to create - from json
+
+
+		try{
+			jsonObj = jsonParse.parse(new FileReader(path)).getAsJsonObject();
+		}catch(FileNotFoundException e){}
+
+		numThread = jsonObj.get("threads").getAsInt();
+		System.out.println(numThread);
+
+		ActorThreadPool atpMain = new ActorThreadPool(numThread);
+		attachActorThreadPool(atpMain);
+		start();
+
 		return 0;
 
+	}
+
+	//private method for run phase by ActionFactory
+	private static void runPhase(String phase){
+		JsonArray PhaseActions = jsonObj.get(phase).getAsJsonArray();
+		LinkedList<Action> Actions = ActionFactory.PhaseBuilder(PhaseActions,atp,wh);
+		ActionPending = new CountDownLatch(Actions.size());
+		for (Action action : Actions) {
+			action.getResult().subscribe(()->ActionPending.countDown());
+		}
+		try{
+			ActionPending.await();
+		}catch(InterruptedException e){}
 	}
 }
