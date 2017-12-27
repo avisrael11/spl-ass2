@@ -17,7 +17,7 @@ public class AddStudentAction extends Action<Boolean>{
         this.studentId      = studentId;
         this.departmentName = departmentName;
 
-        Id = studentId;
+        Id = departmentName;
         setActionName(actionName);
     }
 
@@ -35,5 +35,9 @@ public class AddStudentAction extends Action<Boolean>{
             complete(actions.get(0).getResult().get());
         });
 
+    }
+
+    public String getId(){
+        return Id;
     }
 }

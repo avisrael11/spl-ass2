@@ -23,6 +23,8 @@ public class ParticipateInCourseAction extends Action<Boolean> {
         this.studentId  = studentId;
         this.grade      = grade;
 
+        this.Id         = courseName;
+
         setActionName(actionName);
     }
 
@@ -64,5 +66,9 @@ public class ParticipateInCourseAction extends Action<Boolean> {
 
     private boolean isSpace(){
         return ((CoursePrivateState)privateState).getAvailableSpots() > ((CoursePrivateState)privateState).getRegistered() ;
+    }
+
+    public String getId(){
+        return Id;
     }
 }

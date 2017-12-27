@@ -53,4 +53,8 @@ public class RegisterWithPreferencesAction extends Action<Boolean> {
             complete(false);
         }
     }
+
+    public String getId(){
+        return Id;
+    }
 }

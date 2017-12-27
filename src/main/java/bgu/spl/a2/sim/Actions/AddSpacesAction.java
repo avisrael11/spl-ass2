@@ -3,7 +3,7 @@ package bgu.spl.a2.sim.Actions;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
-public class AddSpacesAction extends Action {
+public class AddSpacesAction extends Action<Boolean> {
 
     private int spaces;
 
