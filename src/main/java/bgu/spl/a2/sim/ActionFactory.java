@@ -54,6 +54,7 @@ public class ActionFactory {
                     CoActorName                     = action.get("Course").getAsString();
                     JsonArray JsonPreReq            = action.get("Prerequisites").getAsJsonArray();
                     Vector<String> PreReq           = new Vector<>();
+
                     /*
                     for (JsonElement jsonElement : JsonPreReq) {
                         PreReq.add(jsonElement.getAsString());
