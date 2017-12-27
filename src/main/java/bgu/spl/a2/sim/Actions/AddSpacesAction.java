@@ -6,14 +6,14 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 public class AddSpacesAction extends Action {
 
     private int spaces;
-    private String Id;
+
 
     private final String actionName = "Add Spaces";
 
     public AddSpacesAction(String courseName, int spaces){
-
         this.spaces = spaces;
-        this.Id = courseName;
+        this.Id     = courseName;
+
         this.setActionName(actionName);
     }
 

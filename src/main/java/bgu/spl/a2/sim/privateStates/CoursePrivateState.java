@@ -41,10 +41,10 @@ public class CoursePrivateState extends PrivateState{
 	}
 
 	public boolean addSpaces(int numSpaces){
-		if( availableSpots != -1){
-			availableSpots += numSpaces;
-			return true;
-		}
+			if (availableSpots != -1) {
+				availableSpots += numSpaces;
+				return true;
+			}
 		return false;
 	}
 
@@ -53,10 +53,19 @@ public class CoursePrivateState extends PrivateState{
 	}
 
 	public void setAvailableSpots(int availableSpots) {
-		this.availableSpots = availableSpots;
+			this.availableSpots = availableSpots;
 	}
 
 	public void setRegistered(int registered) {
 		this.registered = registered;
+	}
+
+	public boolean registerStudent(String student){
+			if(availableSpots > registered){
+				++registered;
+				regStudents.add(student);
+				return true;
+			}
+		return false;
 	}
 }
