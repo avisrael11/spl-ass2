@@ -60,7 +60,7 @@ public class Simulator {
 		///////////////////////////
 
 		HashMap<String, PrivateState> SimulationResult = end();
-		Set<String> keySet = SimulationResult.keySet();
+		//Set<String> keySet = SimulationResult.keySet();
 
 		try {
 			FileOutputStream fResult = new FileOutputStream("result.ser");
