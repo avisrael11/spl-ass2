@@ -10,7 +10,7 @@ import bgu.spl.a2.PrivateState;
 public class StudentPrivateState extends PrivateState{
 
 	private HashMap<String, Integer> grades = new HashMap<>();
-	private long signature;
+	private long signature = 0;
 	
 	/**
  	 * Implementors note: you may not add other constructors to this class nor
@@ -42,5 +42,9 @@ public class StudentPrivateState extends PrivateState{
 		}
 		grades.put(course, grade);
 		return true;
+	}
+
+	public void setSignature(long signature){
+		this.signature = signature;
 	}
 }
