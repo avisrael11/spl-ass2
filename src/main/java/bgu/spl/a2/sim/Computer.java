@@ -9,6 +9,8 @@ public class Computer {
 	long failSig;
 	long successSig;
 	private SuspendingMutex mutex;
+
+	private final int passGrade = 56;
 	
 	public Computer(String computerType) {
 		this.computerType = computerType;
@@ -36,8 +38,15 @@ public class Computer {
 	 * @return a signature if couersesGrades grades meet the conditions
 	 */
 	public long checkAndSign(List<String> courses, Map<String, Integer> coursesGrades){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		boolean confirmCourse = true;
+
+		for (String courseName : courses){
+		    if(!coursesGrades.containsKey(courseName) || coursesGrades.get(courseName) < passGrade){
+		        confirmCourse = false;
+		        break;
+            }
+        }
+        return confirmCourse? successSig : failSig;
 	}
 
 	public void free(){
