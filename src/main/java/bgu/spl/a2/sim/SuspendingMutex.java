@@ -1,6 +1,9 @@
 package bgu.spl.a2.sim;
 import bgu.spl.a2.Promise;
+import com.sun.jmx.remote.internal.ArrayQueue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,6 +19,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SuspendingMutex {
 
 	private Lock lock = new ReentrantLock();
+	private Computer computer;
+	private List<Promise<Computer>> promises = new ArrayList<>();
+
 	
 	/**
 	 * Computer acquisition procedure
@@ -27,8 +33,20 @@ public class SuspendingMutex {
 	 * @return a promise for the requested computer
 	 */
 	public Promise<Computer> down(String computerType){
+		Promise<Computer> promise = new Promise<>();
 		if (lock.tryLock()){
+			promise.resolve(computer);
+		}
+		else{
+			promises.add(promise);
+		}
+		return promise;
 	}
+
+	public void setComputer(Computer computer) {
+		this.computer = computer;
+	}
+
 	/**
 	 * Computer return procedure
 	 * releases a computer which becomes available in the warehouse upon completion
@@ -36,10 +54,11 @@ public class SuspendingMutex {
 	 * @param computer
 	 */
 	public void up(Computer computer){
-		if( lock.isHeldByCurrentThread()){
-
+		if(promises.size() > 0){
+			promises.remove(0).resolve(this.computer);
 		}
-
-
+		else{
+			lock.unlock();
+		}
 	}
 }
