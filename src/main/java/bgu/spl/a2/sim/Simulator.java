@@ -66,10 +66,7 @@ public class Simulator {
 		try {
 			FileOutputStream fResult = new FileOutputStream("result.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fResult);
-			for(PrivateState privateState : simulationResult){
-				oos.writeObject(privateState);
-			}
-
+			oos.writeObject(simulationResult);
 		} catch (FileNotFoundException e) {
 			System.out.println("The file is not found");
 		} catch (IOException e) {
