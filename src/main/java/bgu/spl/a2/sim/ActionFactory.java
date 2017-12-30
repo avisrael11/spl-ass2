@@ -46,7 +46,7 @@ public class ActionFactory {
         LinkedList<ActionAndPrivateState> actionAndPrivateStateLinkedList = new LinkedList<>();
         for (int i = 0; i < actionsArray.size(); i++) {
             JsonObject action = actionsArray.get(i).getAsJsonObject();
-            String actionName = action.get("Action").getAsString();//holds the string name
+            String actionName = action.get("Action").getAsString();
 
             String departmentName;
             String courseName;
@@ -55,10 +55,10 @@ public class ActionFactory {
 
             switch (actionName){
                 case "Open Course":
-                    departmentName   = action.get("Department").getAsString();
-                    courseName       = action.get("Course").getAsString();
+                    departmentName          = action.get("Department").getAsString();
+                    courseName              = action.get("Course").getAsString();
                     JsonArray jsonPreReq    = action.get("Prerequisites").getAsJsonArray();
-                    space               = action.get("Space").getAsInt();
+                    space                   = action.get("Space").getAsInt();
                     Vector<String> preReq   = new Vector<>();
 
 
@@ -72,8 +72,8 @@ public class ActionFactory {
                     break;
 
                 case "Add Student":
-                    departmentName = action.get("Department").getAsString();
-                    student = action.get("Student").getAsString();
+                    departmentName  = action.get("Department").getAsString();
+                    student         = action.get("Student").getAsString();
 
                     AddStudentAction addStudent = new AddStudentAction(departmentName,student);
                     actionAndPrivateStateLinkedList.add(new ActionAndPrivateState(addStudent, new DepartmentPrivateState()));
@@ -108,7 +108,7 @@ public class ActionFactory {
                         studentsId.add(jsonElement.getAsString());
                     }
 
-                    JsonArray jsonConditions = action.get("Conditions").getAsJsonArray();
+                    JsonArray jsonConditions     = action.get("Conditions").getAsJsonArray();
                     List<String> conditionsList  = new LinkedList<>();
                     for (JsonElement jsonElement : jsonConditions) {
                         conditionsList.add(jsonElement.getAsString());

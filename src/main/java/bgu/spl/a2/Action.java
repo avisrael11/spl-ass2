@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
  *
  * @param <R> the action result type
  */
-public abstract class Action<R> {
+public abstract class Action<R> implements Serializable {
 
     String name;
 
@@ -33,6 +34,7 @@ public abstract class Action<R> {
      */
     protected abstract void start();
 
+    public abstract String getId();
     /**
     *
     * start/continue handling the action

@@ -5,15 +5,13 @@
  */
 package bgu.spl.a2.sim;
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.lang.System;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.ActionAndPrivateState;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -59,13 +57,13 @@ public class Simulator {
 
 		///////////////////////////
 
-		HashMap<String, PrivateState> SimulationResult = end();
+		ConcurrentLinkedQueue<PrivateState> simulationResult = end();
 		//Set<String> keySet = SimulationResult.keySet();
 
 		try {
 			FileOutputStream fResult = new FileOutputStream("result.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fResult);
-			oos.writeObject(SimulationResult);
+			oos.writeObject(simulationResult);
 		} catch (FileNotFoundException e) {
 			System.out.println("The file is not found");
 		} catch (IOException e) {
@@ -88,14 +86,12 @@ public class Simulator {
 	* returns list of private states
 	*/
 	public static ConcurrentLinkedQueue<PrivateState> end(){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
-		/*
+
+
 		try {
 			atp.shutdown();
 		}catch(InterruptedException ignored){}
-		HashMap<String,PrivateState> SimulationResult = ((HashMap<String,PrivateState>)atp.getActors());
-		return SimulationResult;*/
+		return new ConcurrentLinkedQueue<> (atp.getActors().values());
 	}
 
 	/**
@@ -103,7 +99,7 @@ public class Simulator {
 	 * returns list of private states
 	 */
 	public static int main(String [] args){
-		String path 		= args[0];
+		String path 			= args[0];
 		JsonParser jsonParse 	= new JsonParser();
 		int numThread; // Number of thread to create - from json
 
@@ -125,14 +121,16 @@ public class Simulator {
 
 	//private method for run phase by ActionFactory
 	private static void runPhase(String phase){
-		JsonArray PhaseActions = jsonObj.get(phase).getAsJsonArray();
-		LinkedList<Action> Actions = ActionFactory.PhaseBuilder(PhaseActions,atp,wh);
-		ActionPending = new CountDownLatch(Actions.size());
-		for (Action action : Actions) {
-			action.getResult().subscribe(()->ActionPending.countDown());
+		JsonArray phaseActions					 				 = jsonObj.get(phase).getAsJsonArray();
+		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,atp,wh);
+		ActionPending							  				 = new CountDownLatch(actionAndPrivateStates.size());
+
+		for (ActionAndPrivateState action : actionAndPrivateStates) {
+			action.getAction().getResult().subscribe(()->ActionPending.countDown());
+			atp.submit(action.getAction(), action.getAction().getId(), action.getPrivateState());
 		}
 		try{
 			ActionPending.await();
-		}catch(InterruptedException e){}
+		}catch(InterruptedException e){System.out.println(e.getMessage());}
 	}
 }
