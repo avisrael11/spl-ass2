@@ -19,7 +19,7 @@ public abstract class Action<R> implements Serializable {
 
     String name;
 
-    protected Promise<R> promise;
+    protected Promise<R> promise = new Promise<>();
 
     protected ActorThreadPool actorThreadPool;
     protected String Id;
@@ -48,6 +48,7 @@ public abstract class Action<R> implements Serializable {
     *
     */
    /*package*/final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+       System.out.println("handle - " + name +": " + Id + Thread.currentThread().getId());
        if(!started) {
            Id               = actorId;
            actorThreadPool  = pool;
@@ -73,6 +74,8 @@ public abstract class Action<R> implements Serializable {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback callback) {
+        System.out.println("then - " + name +": " + Id + " " + Thread.currentThread().getId());
+        System.out.println("num of actions to be complete: " + actions.size());
         continuationCallBack = callback;
         CountDownLatch promisesResolved = new CountDownLatch(actions.size());
 
@@ -84,12 +87,13 @@ public abstract class Action<R> implements Serializable {
             });
         }
         try {
+            System.out.println("waiting for promises to be resolved" + Thread.currentThread().getId());
             promisesResolved.await();
         }
         catch (InterruptedException e){
             e.printStackTrace();
         }
-
+System.out.println("all promises resolved" + Thread.currentThread().getId());
         sendMessage(this, Id, privateState);
     }
 
@@ -100,7 +104,8 @@ public abstract class Action<R> implements Serializable {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-       promise.resolve(result);
+        System.out.println("complete - " + name +": " + Id + " " + Thread.currentThread().getId());
+        promise.resolve(result);
     }
     
     /**
@@ -123,6 +128,7 @@ public abstract class Action<R> implements Serializable {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
+        System.out.println("send message - " + name +": " + actorId + " " + Thread.currentThread().getId());
         actorThreadPool.submit(action, actorId, actorState);
         return action.getResult();
 	}

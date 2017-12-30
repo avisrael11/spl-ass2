@@ -16,10 +16,14 @@ public class Warehouse {
 
     public Warehouse(HashMap<String, Computer> computers){
         this.computers = computers;
+        mutexes         = new HashMap<>();
+
+        System.out.println("warehouse");
 
         computers.forEach( (computerType, comp)-> {
             SuspendingMutex mutex = new SuspendingMutex();
             mutex.setComputer(comp);
+            comp.setMutex(mutex);
             mutexes.put(computerType, mutex);
         } );
     }

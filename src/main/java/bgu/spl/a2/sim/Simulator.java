@@ -38,6 +38,8 @@ public class Simulator {
 	*/
     public static void start(){
 
+    	System.out.println("starting...");
+
 		// Phase - build computer
 		JsonArray computersArray = jsonObj.get("Computers").getAsJsonArray();
 		HashMap<String, Computer> ComputersCollection = ActionFactory.ComputerBuilder(computersArray);
@@ -47,10 +49,11 @@ public class Simulator {
 		//////////////////////////
 		// Phase 1
 		runPhase("Phase 1");
-
+		System.out.println("and of phase 111111111111111111111111111111111 " + Thread.currentThread().getId());
 
 		// Phase 2
 		runPhase("Phase 2");
+		System.out.println("and of phase 2222222222222222222222222222222222" + Thread.currentThread().getId());
 
 		// Phase 3
 		runPhase("Phase 3");
@@ -63,7 +66,10 @@ public class Simulator {
 		try {
 			FileOutputStream fResult = new FileOutputStream("result.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fResult);
-			oos.writeObject(simulationResult);
+			for(PrivateState privateState : simulationResult){
+				oos.writeObject(privateState);
+			}
+
 		} catch (FileNotFoundException e) {
 			System.out.println("The file is not found");
 		} catch (IOException e) {
@@ -99,14 +105,14 @@ public class Simulator {
 	 * returns list of private states
 	 */
 	public static int main(String [] args){
-		String path 			= "C:\\Users\\אורעד\\Documents\\GitHub\\spl-ass2";//args[0];
+		String path 			= "test.json";//args[0];
 		JsonParser jsonParse 	= new JsonParser();
 		int numThread; // Number of thread to create - from json
 
-
+		System.out.println("executing...");
 		try{
 			jsonObj = jsonParse.parse(new FileReader(path)).getAsJsonObject();
-		}catch(FileNotFoundException e){}
+		}catch(FileNotFoundException e){System.out.println("exeption");}
 
 		numThread = jsonObj.get("threads").getAsInt();
 		System.out.println(numThread);
@@ -123,6 +129,8 @@ public class Simulator {
 	private static void runPhase(String phase){
 		JsonArray phaseActions					 				 = jsonObj.get(phase).getAsJsonArray();
 		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,atp,wh);
+		System.out.println("num of actions in phase: " + actionAndPrivateStates.size() + " " + Thread.currentThread().getId());
+
 		ActionPending							  				 = new CountDownLatch(actionAndPrivateStates.size());
 
 		for (ActionAndPrivateState action : actionAndPrivateStates) {
@@ -130,6 +138,8 @@ public class Simulator {
 			atp.submit(action.getAction(), action.getAction().getId(), action.getPrivateState());
 		}
 		try{
+			System.out.println("waiting for all threads " + Thread.currentThread().getId());
+
 			ActionPending.await();
 		}catch(InterruptedException e){System.out.println(e.getMessage());}
 	}

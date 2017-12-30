@@ -20,6 +20,7 @@ public class VerifyParticipateInCourse extends Action<Boolean> {
     }
 
     protected void start(){
+        System.out.println("Verify Participate");
         ((StudentPrivateState)privateState).addCourse(courseName, grade);
         complete(true);
     }

@@ -31,7 +31,9 @@ public class ParticipateInCourseAction extends Action<Boolean> {
     public void start(){
         privateState.addRecord(actionName);
 
-        if(isRegistered() || !preRequisitesMet() || !isSpace()){
+        System.out.println(" Participate: start " + "student: " + studentId +" course: " + courseName + " " + Thread.currentThread().getId());
+
+        if(isRegistered() || !isSpace() || !preRequisitesMet()){
             complete(false);
         }
         else{
@@ -41,9 +43,10 @@ public class ParticipateInCourseAction extends Action<Boolean> {
             Action<Boolean> verifyParticipateInCourse = new VerifyParticipateInCourse(studentId, courseName, grade);
             actions.add(verifyParticipateInCourse);
 
-            sendMessage(verifyParticipateInCourse, courseName, new StudentPrivateState());
+            sendMessage(verifyParticipateInCourse, studentId, new StudentPrivateState());
 
             then(actions, ()->{
+                System.out.println("running lambda " + Thread.currentThread().getId());
                 complete(actions.get(0).getResult().get());
             });
         }
@@ -54,8 +57,8 @@ public class ParticipateInCourseAction extends Action<Boolean> {
     }
 
     private boolean preRequisitesMet(){
-        List<String> preRequisites = ((CoursePrivateState)actorThreadPool.getPrivateState(courseName)).getPrequisites();
-        HashMap<String, Integer> studentGrades = (((StudentPrivateState)actorThreadPool.getPrivateState(courseName)).getGrades());
+        List<String> preRequisites = ((CoursePrivateState)privateState).getPrequisites();
+        HashMap<String, Integer> studentGrades = (((StudentPrivateState)actorThreadPool.getPrivateState(studentId)).getGrades());
         for(String course : preRequisites){
             if ( !studentGrades.containsKey(course) || !(studentGrades.get(course) >= passGrade) ){
                 return false;

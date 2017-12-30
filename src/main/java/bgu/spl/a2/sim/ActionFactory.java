@@ -75,7 +75,7 @@ public class ActionFactory {
                     departmentName  = action.get("Department").getAsString();
                     student         = action.get("Student").getAsString();
 
-                    AddStudentAction addStudent = new AddStudentAction(departmentName,student);
+                    AddStudentAction addStudent = new AddStudentAction(student, departmentName);
                     actionAndPrivateStateLinkedList.add(new ActionAndPrivateState(addStudent, new DepartmentPrivateState()));
                     break;
 

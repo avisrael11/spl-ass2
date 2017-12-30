@@ -23,7 +23,7 @@ public class AddStudentAction extends Action<Boolean>{
 
     public void start(){
         privateState.addRecord(actionName);
-        ((DepartmentPrivateState)privateState).addStudent(studentId);
+//        ((DepartmentPrivateState)privateState).addStudent(studentId);
 
         Action<Boolean> addStudent      = new VerifyAddStudent(studentId, departmentName);
         List<Action<Boolean>> actions   = new ArrayList<>();

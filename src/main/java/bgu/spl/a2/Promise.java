@@ -33,6 +33,7 @@ public class Promise<T>{
 	 *             not yet resolved
 	 */
 	public T get() throws IllegalStateException{
+		System.out.println("promise: get " + Thread.currentThread().getId());
 		synchronized (this){
 		    if (resolved){
 		        return result;
@@ -66,6 +67,7 @@ public class Promise<T>{
 	 *            - the value to resolve this promise object with
 	 */
 	public void resolve(T value) throws IllegalStateException {
+		System.out.println("promise: resolve " + Thread.currentThread().getId());
         synchronized (this) {
             if (resolved) {
                 throw new IllegalStateException("promise already resolved");
@@ -93,6 +95,7 @@ public class Promise<T>{
          *            the callback to be called when the promise object is resolved
          */
 	public void subscribe(callback callback) {
+		System.out.println("promise: subscribe " + Thread.currentThread().getId());
 		synchronized (this) {
             if (isResolved()) {
                 callback.call();
