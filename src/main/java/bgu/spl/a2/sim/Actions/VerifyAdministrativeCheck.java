@@ -19,4 +19,9 @@ public class VerifyAdministrativeCheck extends Action<Boolean> {
         ((StudentPrivateState)privateState).setSignature(signature);
         complete(true);
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }

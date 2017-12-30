@@ -24,4 +24,9 @@ public class VerifyOpenCourse extends Action<Boolean> {
         ((CoursePrivateState)this.privateState).setAvailableSpots(this.maxStudents);
         complete(true);
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }

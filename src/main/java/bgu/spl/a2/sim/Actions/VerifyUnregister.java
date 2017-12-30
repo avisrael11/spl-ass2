@@ -19,4 +19,9 @@ public class VerifyUnregister extends Action<Boolean> {
         ((StudentPrivateState)privateState).getGrades().remove(courseName);
         complete(true);
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }

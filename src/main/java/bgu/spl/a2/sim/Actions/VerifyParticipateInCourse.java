@@ -23,4 +23,9 @@ public class VerifyParticipateInCourse extends Action<Boolean> {
         ((StudentPrivateState)privateState).addCourse(courseName, grade);
         complete(true);
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }
