@@ -49,11 +49,9 @@ public class Simulator {
 		//////////////////////////
 		// Phase 1
 		runPhase("Phase 1");
-		System.out.println("and of phase 1111111111111111111111111111111111111111111111111111111111111111111111111111111111111 " + Thread.currentThread().getId());
 
 		// Phase 2
 		runPhase("Phase 2");
-		System.out.println("and of phase 2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222" + Thread.currentThread().getId());
 
 		// Phase 3
 		runPhase("Phase 3");
@@ -101,11 +99,10 @@ public class Simulator {
 	 * returns list of private states
 	 */
 	public static int main(String [] args){
-		String path 			= "SimulatorTest.json";//args[0];
+		String path 			= args[0];
 		JsonParser jsonParse 	= new JsonParser();
 		int numThread; // Number of thread to create - from json
 
-		System.out.println("executing...");
 		try{
 			jsonObj = jsonParse.parse(new FileReader(path)).getAsJsonObject();
 		}catch(FileNotFoundException e){System.out.println("exeption");}
@@ -125,7 +122,6 @@ public class Simulator {
 	private static void runPhase(String phase){
 		JsonArray phaseActions					 				 = jsonObj.get(phase).getAsJsonArray();
 		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,atp,wh);
-		System.out.println("num of actions in phase: " + actionAndPrivateStates.size() + " " + Thread.currentThread().getId());
 
 		ActionPending							  				 = new CountDownLatch(actionAndPrivateStates.size());
 
@@ -134,7 +130,6 @@ public class Simulator {
 			atp.submit(action.getAction(), action.getAction().getId(), action.getPrivateState());
 		}
 		try{
-			System.out.println("waiting for all threads " + Thread.currentThread().getId());
 
 			ActionPending.await();
 		}catch(InterruptedException e){System.out.println(e.getMessage());}
