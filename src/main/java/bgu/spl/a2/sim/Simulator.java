@@ -99,7 +99,7 @@ public class Simulator {
 	 * returns list of private states
 	 */
 	public static int main(String [] args){
-		String path 			= args[0];
+		String path 			= "test.json";//args[0];
 		JsonParser jsonParse 	= new JsonParser();
 		int numThread; // Number of thread to create - from json
 

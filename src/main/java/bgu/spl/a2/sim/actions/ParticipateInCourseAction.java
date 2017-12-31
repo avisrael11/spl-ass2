@@ -32,13 +32,10 @@ public class ParticipateInCourseAction extends Action<Boolean> {
     public void start(){
         privateState.addRecord(actionName);
 
-        System.out.println(" Participate: start " + "student: " + studentId +" course: " + courseName + " " + Thread.currentThread().getId());
-
         if(isRegistered() || !isSpace() || !preRequisitesMet()){
             complete(false);
         }
         else{
-            System.out.println("try to register to course");
             ((CoursePrivateState)privateState).registerStudent(studentId);
 
             List<Action<Boolean>> actions = new ArrayList<>();
@@ -48,7 +45,6 @@ public class ParticipateInCourseAction extends Action<Boolean> {
             sendMessage(verifyParticipateInCourse, studentId, new StudentPrivateState());
 
             then(actions, ()->{
-                System.out.println("running lambda " + Thread.currentThread().getId());
                 complete(actions.get(0).getResult().get());
             });
         }
