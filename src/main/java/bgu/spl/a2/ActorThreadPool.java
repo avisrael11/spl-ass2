@@ -155,7 +155,10 @@ public class ActorThreadPool {
 	}
 
 	/**
-	 * initialize the threads
+	 * initialize the threads.
+	 *
+	 * @param nthreads
+	 * 		Number of threads to initialize
 	 *
 	 */
 	private void initializeThreads(int nthreads){
@@ -172,7 +175,7 @@ public class ActorThreadPool {
 
 						if (!currQueue.isEmpty() && currQueue.getLock().tryLock()) {
 							try {
-								if (!currQueue.isEmpty()) { // get an Action from @currQueue if not empty
+								if (!currQueue.isEmpty()) {
 									currQueue.remove().handle(this, currQueue.getActorId(), privateStates.get(currQueue.getActorId()));
 									if(!currQueue.isEmpty())
 										versionMonitor.inc();
