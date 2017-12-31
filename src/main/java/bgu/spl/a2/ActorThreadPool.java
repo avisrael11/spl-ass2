@@ -143,7 +143,7 @@ public class ActorThreadPool {
 
 
 	/**
-	 * getter for actor's private state
+	 * A getter for actor's private state
 	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
 	 *
 	 * @param actorId

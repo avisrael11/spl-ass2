@@ -7,8 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
- * A class that represents a queue of
- * {@link ActorThreadPool}
+ * The class represents a queue of status lock of Action per Actor,
+ * it uses @{@link ReentrantLock} to maintain a thread-safe environment.
  *
  */
 public class ActionQueue extends ConcurrentLinkedQueue<Action> {
@@ -18,12 +18,10 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
 
 
     /**
-     * an class that represents a Queue that may be executed using the
-     * {@link ActorThreadPool}
-     *
+     * creates a {@link ActionQueue} per actor.
      *
      * @param actorId
-     *            ***
+     *            The string represent the Id of the actor that owns this queue.
      */
     public ActionQueue(String actorId) {
         super();
@@ -33,11 +31,9 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
 
 
     /**
-     * to do - add doc
+     * A getter supply the locking object in the qeue of actor owner.
      *
-     *
-     *
-     *            ***
+     * @return ths locking object.
      */
     public Lock getLock(){
         return this.lock;
@@ -45,11 +41,10 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
 
 
     /**
-     * to do - add doc
+     * A getter supply the Id of actor owner.
      *
+     *@return ths Id of actor
      *
-     *
-     *            ***
      */
     public String getActorId(){
         return this.actorId;
