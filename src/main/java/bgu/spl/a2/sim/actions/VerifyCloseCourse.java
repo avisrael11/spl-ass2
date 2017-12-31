@@ -4,6 +4,9 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
+/**
+ * Action belong to course actor
+ */
 public class VerifyCloseCourse extends Action<Boolean> {
 
     private String courseName;
@@ -19,9 +22,10 @@ public class VerifyCloseCourse extends Action<Boolean> {
         setActionName(actionName);
     }
 
-
+    /**
+     * remove course from all registered student's grade shit
+     */
     protected void start(){
-        //remove course from all registered student's grade shit
         for(String student : ((CoursePrivateState)privateState).getRegStudents() ){
             ((StudentPrivateState)actorThreadPool.getPrivateState(student)).removeCourse(courseName);
         }

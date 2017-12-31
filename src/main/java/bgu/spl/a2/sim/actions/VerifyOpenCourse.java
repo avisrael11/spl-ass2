@@ -5,6 +5,9 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 import java.util.List;
 
+/**
+ * Action belong to course actor
+ */
 public class VerifyOpenCourse extends Action<Boolean> {
 
     private String       courseName;
@@ -19,6 +22,9 @@ public class VerifyOpenCourse extends Action<Boolean> {
             this.preRequisites  = preRequisites;
     }
 
+    /**
+     * set prerequisites and available spots
+     */
     protected void start(){
         ((CoursePrivateState)this.privateState).setPrequisites(this.preRequisites);
         ((CoursePrivateState)this.privateState).setAvailableSpots(this.maxStudents);
