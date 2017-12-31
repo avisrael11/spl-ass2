@@ -5,10 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
-import bgu.spl.a2.PrivateState;
-import bgu.spl.a2.sim.Actions.*;
+import bgu.spl.a2.sim.actions.*;
 import bgu.spl.a2.sim.privateStates.ActionAndPrivateState;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
@@ -16,7 +14,6 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 public class ActionFactory {

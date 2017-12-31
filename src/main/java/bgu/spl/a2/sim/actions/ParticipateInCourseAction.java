@@ -1,6 +1,7 @@
-package bgu.spl.a2.sim.Actions;
+package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.PrivateState;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
@@ -58,6 +59,11 @@ public class ParticipateInCourseAction extends Action<Boolean> {
 
     private boolean preRequisitesMet(){
         List<String> preRequisites = ((CoursePrivateState)privateState).getPrequisites();
+        System.out.println(" Participate: preRequisitesMet " + "student: " + studentId +" course: " + courseName + " " + Thread.currentThread().getId());
+        PrivateState p = actorThreadPool.getPrivateState(studentId);
+        if(p == null){
+            System.out.println("pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp Participate: student private state not found " + "student: " + studentId +" course: " + courseName + " " + Thread.currentThread().getId());
+        }
         HashMap<String, Integer> studentGrades = (((StudentPrivateState)actorThreadPool.getPrivateState(studentId)).getGrades());
         for(String course : preRequisites){
             if ( !studentGrades.containsKey(course) || !(studentGrades.get(course) >= passGrade) ){
