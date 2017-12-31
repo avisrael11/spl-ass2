@@ -5,6 +5,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+
+/**
+ * A class that represents a queue of
+ * {@link ActorThreadPool}
+ *
+ */
 public class ActionQueue extends ConcurrentLinkedQueue<Action> {
 
     private Lock lock;
@@ -12,7 +18,8 @@ public class ActionQueue extends ConcurrentLinkedQueue<Action> {
 
 
     /**
-     * to do - add doc
+     * an class that represents a Queue that may be executed using the
+     * {@link ActorThreadPool}
      *
      *
      * @param actorId
