@@ -20,7 +20,8 @@ import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
 
 /**
- * A class represent the simulator for part 2 of the assignment
+ * A class represent the simulator for part 2 of the assignment.
+ *
  */
 public class Simulator {
 
@@ -35,6 +36,8 @@ public class Simulator {
 
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
+	 *
+	 *
 	*/
     public static void start(){
 
@@ -121,7 +124,7 @@ public class Simulator {
 	//private method for run phase by ActionFactory
 	private static void runPhase(String phase){
 		JsonArray phaseActions					 				 = jsonObj.get(phase).getAsJsonArray();
-		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,atp,wh);
+		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,wh);
 
 		ActionPending							  				 = new CountDownLatch(actionAndPrivateStates.size());
 

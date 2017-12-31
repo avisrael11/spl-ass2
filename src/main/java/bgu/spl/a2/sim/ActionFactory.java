@@ -15,9 +15,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * utility class for {@ComputerBuilder} and {@PhaseBuilder}, uses by {@Simulator}.
+ *
+ */
 
 public class ActionFactory {
 
+    /**
+     * utility static method for Compuer building, uses by {@Simulator}.
+     *
+     * @param ComputersCollection
+     *      JsonArray contain the information to build the computers
+     */
     public static HashMap<String,Computer> ComputerBuilder(JsonArray ComputersCollection){
         HashMap<String,Computer> ComputersHashMap = new HashMap<>();
         for(int i = 0;i < ComputersCollection.size();i++){
@@ -37,8 +47,16 @@ public class ActionFactory {
         return ComputersHashMap;
     }
 
-
-    public static LinkedList<ActionAndPrivateState> PhaseBuilder(JsonArray actionsArray, ActorThreadPool atp, Warehouse warehouse){
+    /**
+     * utility static method for run tasks in the part of Phases in JSON file, uses by {@Simulator}.
+     *
+     * @param actionsArray
+     *      JsonArray contain the information to build the computers
+     *
+     * @param actionsArray
+     *
+     */
+    public static LinkedList<ActionAndPrivateState> PhaseBuilder(JsonArray actionsArray, Warehouse warehouse){
 
         LinkedList<ActionAndPrivateState> actionAndPrivateStateLinkedList = new LinkedList<>();
         for (int i = 0; i < actionsArray.size(); i++) {
