@@ -20,7 +20,7 @@ import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
 
 /**
- * A class describing the simulator for part 2 of the assignment
+ * A class represent the simulator for part 2 of the assignment
  */
 public class Simulator {
 

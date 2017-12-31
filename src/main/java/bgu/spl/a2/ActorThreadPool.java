@@ -30,11 +30,11 @@ public class ActorThreadPool {
 	 */
 	protected List<Thread> threads;
 
-	/* - ShutDownLatch a {@link CountDownLatch} that is initialized with @nthreads and use @countDown every time a thread from the pool has terminated.
-	 * ShutDownLatch is used in {@link #shutdown()} to make sure all threads are terminated before the method returns.
+	/* - ShutDownLatch a CountDownLatch that is initialized with @nthreads and use @countDown every time a thread from the pool has terminated.
+	 * ShutDownLatch is used in shutdown() to make sure all threads are terminated before the method returns.
 	 *
-	 * - StartLatch is a {@link CountDownLatch} that is initialized with @nthreads and use @countDown every time a thread from the pool has started.
-	 * startLatch is used in {@link #start()} to make sure all threads have started before the method returns.
+	 * - StartLatch is a CountDownLatch that is initialized with @nthreads and use @countDown every time a thread from the pool has started.
+	 * startLatch is used in start() to make sure all threads have started before the method returns.
 	 */
 	private CountDownLatch startLatch, ShutDownLatch;
 	private VersionMonitor versionMonitor;
@@ -117,7 +117,7 @@ public class ActorThreadPool {
 
 
 	/**
-	 * start the threads belongs to this thread pool
+	 * start the threads belongs to this thread pool.
 	 */
 	public void start() {
 		for(Thread thread: this.threads)
@@ -141,8 +141,9 @@ public class ActorThreadPool {
 		return privateStates;
 	}
 
+
 	/**
-	 * getter for actor's private state
+	 * A getter for actor's private state
 	 * (commenrt from course website-10.12.2017 : Updated the interfaces. Add getActors() and getPrivaetState(String actorId) in ActorThreadPool.)
 	 *
 	 * @param actorId
@@ -154,7 +155,10 @@ public class ActorThreadPool {
 	}
 
 	/**
-	 * initialize the threads
+	 * initialize the threads.
+	 *
+	 * @param nthreads
+	 * 		Number of threads to initialize
 	 *
 	 */
 	private void initializeThreads(int nthreads){
@@ -171,7 +175,7 @@ public class ActorThreadPool {
 
 						if (!currQueue.isEmpty() && currQueue.getLock().tryLock()) {
 							try {
-								if (!currQueue.isEmpty()) { // get an Action from @currQueue if not empty
+								if (!currQueue.isEmpty()) {
 									currQueue.remove().handle(this, currQueue.getActorId(), privateStates.get(currQueue.getActorId()));
 									if(!currQueue.isEmpty())
 										versionMonitor.inc();
@@ -186,7 +190,7 @@ public class ActorThreadPool {
 						}//if
 					}//for
 					try {
-						if (versionMonitor.getVersion()==version) //deadlock - need check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+						if (versionMonitor.getVersion()==version)
 							versionMonitor.await(version);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt(); // if thread is blocked

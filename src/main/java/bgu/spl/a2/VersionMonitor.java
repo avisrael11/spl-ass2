@@ -35,7 +35,7 @@ public class VersionMonitor {
     }
 
     /**
-     * increnent version by one
+     * Increnent version by one
      *
      * synchronization is to make sure that all the waiting threads are notified (no context switch between the while and wait)
      */
@@ -47,7 +47,8 @@ public class VersionMonitor {
     }
 
     /**
-     * wait until versionMonitor's version is different than
+     * Wait until versionMonitor's version is different than
+     *
      * @param version
      *
      * @throws InterruptedException
