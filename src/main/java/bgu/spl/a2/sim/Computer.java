@@ -3,6 +3,10 @@ package bgu.spl.a2.sim;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents an Computer
+ *
+ */
 public class Computer {
 
 	String computerType;
@@ -11,7 +15,13 @@ public class Computer {
 	private SuspendingMutex mutex;
 
 	private final int passGrade = 56;
-	
+
+	/**
+	 * creates a {@link Computer} according by type.
+	 *
+	 * @param computerType
+	 * 		Type of the computer.
+	 */
 	public Computer(String computerType) {
 		this.computerType = computerType;
 	}
@@ -22,6 +32,7 @@ public class Computer {
 	}
 
 	public void setSuccessSig (long sSig){
+
 		this.successSig = sSig;
 	}
 
@@ -49,6 +60,9 @@ public class Computer {
         return confirmCourse? successSig : failSig;
 	}
 
+    /**
+     * release the hold on the {@mutex}
+     */
 	public void free(){
 		mutex.up(this);
 	}

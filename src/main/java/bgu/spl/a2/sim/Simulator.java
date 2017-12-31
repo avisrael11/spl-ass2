@@ -20,7 +20,8 @@ import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
 
 /**
- * A class represent the simulator for part 2 of the assignment
+ * A class represent the simulator for part 2 of the assignment.
+ *
  */
 public class Simulator {
 
@@ -35,6 +36,8 @@ public class Simulator {
 
 	/**
 	* Begin the simulation Should not be called before attachActorThreadPool()
+	 *
+	 *
 	*/
     public static void start(){
 
@@ -75,15 +78,17 @@ public class Simulator {
 	/**
 	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
 	* 
-	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
+	* @param myActorThreadPool
+	 * 		the ActorThreadPool which will be used by the simulator
 	*/
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
 		atp = myActorThreadPool;
 	}
 	
 	/**
-	* shut down the simulation
-	* returns list of private states
+	* end the simulation
+	*
+	 *  @returns list of private states
 	*/
 	public static HashMap<String, PrivateState> end(){
 
@@ -96,7 +101,8 @@ public class Simulator {
 
 	/**
 	 * parse the jsonfile and create mutch threads
-	 * returns list of private states
+	 *
+	 * @returns list of private states
 	 */
 	public static int main(String [] args){
 		String path 			= args[0];
@@ -121,7 +127,7 @@ public class Simulator {
 	//private method for run phase by ActionFactory
 	private static void runPhase(String phase){
 		JsonArray phaseActions					 				 = jsonObj.get(phase).getAsJsonArray();
-		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,atp,wh);
+		LinkedList<ActionAndPrivateState> actionAndPrivateStates = ActionFactory.PhaseBuilder(phaseActions,wh);
 
 		ActionPending							  				 = new CountDownLatch(actionAndPrivateStates.size());
 
