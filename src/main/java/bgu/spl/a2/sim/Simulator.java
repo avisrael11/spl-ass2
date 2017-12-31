@@ -60,8 +60,7 @@ public class Simulator {
 
 		///////////////////////////
 
-		ConcurrentLinkedQueue<PrivateState> simulationResult = end();
-		//Set<String> keySet = SimulationResult.keySet();
+		HashMap<String, PrivateState> simulationResult = end();
 
 		try {
 			FileOutputStream fResult = new FileOutputStream("result.ser");
@@ -88,13 +87,13 @@ public class Simulator {
 	* shut down the simulation
 	* returns list of private states
 	*/
-	public static ConcurrentLinkedQueue<PrivateState> end(){
+	public static HashMap<String, PrivateState> end(){
 
 
 		try {
 			atp.shutdown();
 		}catch(InterruptedException ignored){}
-		return new ConcurrentLinkedQueue<> (atp.getActors().values());
+		return new HashMap<String, PrivateState> (atp.getActors());
 	}
 
 	/**

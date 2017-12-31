@@ -63,6 +63,7 @@ public class CoursePrivateState extends PrivateState{
 	public boolean registerStudent(String student){
 			if(availableSpots > registered){
 				++registered;
+				--availableSpots;
 				regStudents.add(student);
 				return true;
 			}
@@ -72,6 +73,7 @@ public class CoursePrivateState extends PrivateState{
 	public void unRegisterStudent(String student){
 		if(regStudents.remove(student) && registered > 0){
 			--registered;
+			++availableSpots;
 		}
 	}
 }
