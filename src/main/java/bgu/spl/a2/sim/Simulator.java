@@ -78,15 +78,17 @@ public class Simulator {
 	/**
 	* attach an ActorThreadPool to the Simulator, this ActorThreadPool will be used to run the simulation
 	* 
-	* @param myActorThreadPool - the ActorThreadPool which will be used by the simulator
+	* @param myActorThreadPool
+	 * 		the ActorThreadPool which will be used by the simulator
 	*/
 	public static void attachActorThreadPool(ActorThreadPool myActorThreadPool){
 		atp = myActorThreadPool;
 	}
 	
 	/**
-	* shut down the simulation
-	* returns list of private states
+	* end the simulation
+	*
+	 *  @returns list of private states
 	*/
 	public static HashMap<String, PrivateState> end(){
 
@@ -99,7 +101,8 @@ public class Simulator {
 
 	/**
 	 * parse the jsonfile and create mutch threads
-	 * returns list of private states
+	 *
+	 * @returns list of private states
 	 */
 	public static int main(String [] args){
 		String path 			= args[0];

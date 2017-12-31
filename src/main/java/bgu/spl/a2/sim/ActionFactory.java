@@ -51,10 +51,10 @@ public class ActionFactory {
      * utility static method for run tasks in the part of Phases in JSON file, uses by {@Simulator}.
      *
      * @param actionsArray
-     *      JsonArray contain the information to build the computers
+     *      JsonArray contain the information about actions in the relevent phase.
      *
-     * @param actionsArray
-     *
+     * @param warehouse
+     *      this parameter needed for AdministrativeCheckAction.
      */
     public static LinkedList<ActionAndPrivateState> PhaseBuilder(JsonArray actionsArray, Warehouse warehouse){
 

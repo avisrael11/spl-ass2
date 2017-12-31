@@ -15,8 +15,6 @@ import static org.junit.Assert.*;
 public class ActorThreadPoolTest {
 
     private ActorThreadPool atpTest;
-    AtomicInteger counter= new AtomicInteger(0);
-    CountDownLatch latch = new CountDownLatch(8);
 
     @Before
     public void setUp() throws Exception {
@@ -37,7 +35,7 @@ public class ActorThreadPoolTest {
     public void start() {
         atpTest.start();
         try {
-            sleep(100);
+            sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
